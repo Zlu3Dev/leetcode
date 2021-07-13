@@ -1,0 +1,30 @@
+class Solution {
+    int max;
+    public int maxUniqueSplit(String s){ 
+        Set<String>ans=new HashSet<>();
+        max=0;
+        helper(ans,s,0);
+        return max;
+        
+        
+    }
+    public void helper(Set<String>res,String s,int index)
+    {
+        if(s.length()==index)
+        {
+         max=Math.max(max,res.size());   
+        }
+        
+        for(int i=index;i<s.length();i++)
+        {
+            String str=s.substring(index,i+1);
+            if(!res.contains(str))
+            {    
+                res.add(str);
+                helper(res,s,i+1);
+                res.remove(str);
+             }
+        }
+        
+    }
+}
