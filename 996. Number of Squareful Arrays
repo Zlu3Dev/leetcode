@@ -1,0 +1,39 @@
+class Solution {
+    int count = 0;
+    public int numSquarefulPerms(int[] nums) {
+        helper(nums, 0);
+        return count;
+    }
+    private boolean checkSqaureFul(int first, int second) {
+        double sq = Math.sqrt(first + second);
+        return ((sq - Math.floor(sq))==0);
+    }
+    
+    private void helper(int[] nums, int pos){
+        if(pos > 1 && !checkSqaureFul(nums[pos - 1], nums[pos - 2])){
+            return;
+        }
+        
+        if(pos == nums.length - 1 && !checkSqaureFul(nums[pos], nums[pos - 1])){
+            return;
+        }
+        if(pos == nums.length - 1){
+            count++;
+            return;
+        }
+        HashMap<Integer, Boolean> map = new HashMap<Integer, Boolean>();
+        for(int i = pos ; i < nums.length ; i++){
+            if(!map.containsKey(nums[i])){
+                map.put(nums[i], true);
+                swap(i, pos, nums);
+                helper(nums, pos + 1);
+                swap(i, pos, nums);
+            }
+        }
+    }
+     private void swap(int first, int second, int[] nums) {
+        int temp = nums[first];
+        nums[first] = nums[second];
+        nums[second] = temp;
+    }       
+}
