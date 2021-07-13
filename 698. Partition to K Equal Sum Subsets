@@ -1,0 +1,32 @@
+class Solution {
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for(int i : nums){
+            sum += i;
+        }
+        
+        if(sum%k != 0){//as sum is not divisible by K, we cannot partion into K subsets with same sum.
+            return false;
+        }
+        int[] visited = new int[nums.length];
+        return canPartition(nums, k, 0, sum/k, visited, 0);//[4,3,2,3,5,2,1]
+    }
+    
+     boolean canPartition(int[] nums, int k, int currSum, int targetSum, int[] visited, int idx){
+        if(k==1) return true;
+        if(currSum == targetSum) return canPartition(nums, k-1, 0, targetSum, visited, 0);
+        
+        for(int i=idx; i<nums.length; i++){
+            if(visited[i] != 0 || currSum + nums[i] > targetSum){
+                continue;
+            }
+            visited[i] = 1;
+            if(canPartition(nums, k, currSum+nums[i], targetSum, visited, i+1)){
+                return true;
+            }
+            visited[i] = 0;
+        }
+        
+        return false;
+    }
+}
