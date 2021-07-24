@@ -1,0 +1,50 @@
+class Solution {
+      
+   
+    public int[] constructDistancedSequence(int n) {
+        // 深搜
+        int[] arr = new int[1 + 2 * (n - 1)];
+        dfs(0, arr, new boolean[n]);
+        return arr;
+    }
+
+    private boolean dfs(int idx, int[] arr, boolean[] used) {
+        if (idx == arr.length) {
+            return true;
+        }
+
+        if (arr[idx] != 0) {
+            return dfs(idx + 1, arr, used);
+        }
+
+        for (int i = used.length; i >= 1; i--) {
+            // cannot be used, and the mirror place cannot be taken
+            if (used[i - 1]) {
+                continue;
+            }                 
+         
+            used[i - 1] = true;
+            arr[idx] = i;
+            if (i == 1) {
+                if (dfs(idx + 1, arr, used)) {
+                    return true;
+                }
+            }
+            else if (idx + i < arr.length && arr[idx + i] == 0) {
+            
+                arr[idx + i] = i;
+                
+                if (dfs(idx + 1, arr, used)) {
+                    return true;
+                }
+
+                arr[idx + i] = 0;
+            }
+            
+            arr[idx] = 0;
+            used[i - 1] = false;
+        }
+        
+        return false;
+    }
+}
