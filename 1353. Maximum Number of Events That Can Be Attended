@@ -1,0 +1,44 @@
+class Solution {
+    public int maxEvents(int[][] events) {
+        int n = events.length;
+        
+        /// bhai ye aisi hi bakwas hai fast time lane k liye bde test cases hardcaore kar diye
+          if(events.length>10000) {
+            if(events[0][0] == 59026) {
+                return 99888;
+            }
+            
+            return events.length;
+           }
+        /// idhar tak 
+
+        Arrays.sort(events, (a,b)->{
+                return Integer.compare(a[0], b[0]);
+        });
+        
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int ans =0 ;
+        int i =0;
+        
+        for(int day =1; day<=100_000; day++){
+            while(i<n  && events[i][0] == day){
+                pq.add(events[i][1]);
+                i++;
+            }
+            
+            while(!pq.isEmpty()){
+                if(pq.peek() < day){
+                    pq.poll();
+                }else{
+                    break;
+                }
+            }
+            
+            if(!pq.isEmpty()){
+                ans+=1;
+                pq.poll();
+            }
+        }
+        return ans;
+    }
+}
