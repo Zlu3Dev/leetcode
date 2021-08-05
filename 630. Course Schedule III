@@ -1,0 +1,14 @@
+class Solution {
+    public int scheduleCourse(int[][] courses) {
+        if (courses == null || courses.length == 0) return 0;
+        Arrays.sort(courses, (a, b) -> a[1] - b[1]); //按照课程结束时间从小到大排序
+        PriorityQueue<Integer> heap = new PriorityQueue<>((a, b) -> b - a); //构建最大堆
+        int time = 0;
+        for (int[] course : courses) {
+            time += course[0]; // 上一门课
+            heap.offer(course[0]); // 这门课的时长放进最大堆
+            if (time > course[1]) time -= heap.poll(); // 如果时间爆了就把之前最耗时的课去掉
+        }
+        return heap.size();
+    }
+}
