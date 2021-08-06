@@ -1,0 +1,94 @@
+class Solution {
+	/**
+	 * A utility function to swap two elements
+	 * 
+	 * @param arr  Array to be sorted in decreasing order
+	 * @param arr2 Array to be sorted based on first array
+	 * @param i    index 1 to swap
+	 * @param j    index 2 to swap
+	 */
+	static void swap(int[] arr, int[] arr2, int i, int j) {
+		int temp = arr[i], temp2 = arr2[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+		arr2[i] = arr2[j];
+		arr2[j] = temp2;
+	}
+
+	/**
+	 * Takes middle element as pivot, places if correctly,
+	 * all smaller to the right,
+	 * all higher to the left
+	 * 
+	 * @param arr  Array to be sorted in decreasing order
+	 * @param arr2 Array to be sorted based on first array
+	 * @param low  starting index
+	 * @param high ending index
+	 * @return pivot index
+	 */
+	static int partition(int[] arr, int[] arr2, int low, int high) {
+
+		swap(arr, arr2, (low + high) / 2, high);
+		// pivot is middle element moved to the end
+		int pivot = arr[high];
+
+		// Index to swap lower element to,
+		// and correct placement of pivot
+		int i = (low - 1);
+
+		for (int j = low; j < high; j++) {
+
+			// If current element is larger
+			// than the pivot
+			if (arr[j] > pivot) {
+
+				// Increment index of
+				// smaller element
+				i++;
+				swap(arr, arr2, i, j);
+			}
+		}
+		swap(arr, arr2, ++i, high);
+		return i;
+	}
+
+	/**
+	 * The main function that implements QuickSort
+	 * 
+	 * @param arr  Array to be sorted in decreasing order
+	 * @param arr2 Array to be sorted based on first array
+	 * @param low  starting index
+	 * @param high ending index
+	 */
+	static void quickSort(int[] arr, int[] arr2, int low, int high) {
+		if (low < high) {
+
+			// partitioning index, arr[pi] is correct
+			int pi = partition(arr, arr2, low, high);
+
+			// Separately sort elements before
+			// partition and after partition
+			quickSort(arr, arr2, low, pi - 1);
+			quickSort(arr, arr2, pi + 1, high);
+		}
+	}
+
+	public int maxPerformance(int n, int[] speed, int[] efficiency, int k) {
+		// ans: final answer, sum: the current sum of the priority queue
+		long ans = 0, sum = 0;
+		// Sorts both arrays in place to be matching efficiency in decreasing order
+		quickSort(efficiency, speed, 0, n - 1);
+		// A queue of the previous speeds, where the lowest is kicked out if it reaches capacity
+		PriorityQueue<Integer> speedMap = new PriorityQueue<>(k, (o1, o2) -> o1 - o2);
+		for (int i = 0; i < n; i++) {
+			if (speedMap.size() > k - 1) {
+				// removes the lowest speed
+				sum -= speedMap.remove();
+			}
+			speedMap.add(speed[i]);
+			sum += speed[i];
+			ans = Math.max(ans, sum * efficiency[i]);
+		}
+		return (int) (ans % 1000000007);
+	}
+}
