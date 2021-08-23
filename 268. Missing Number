@@ -1,0 +1,10 @@
+class Solution {
+    public int missingNumber(int[] nums) {
+        int result = nums.length;
+        for(int i = 0; i < nums.length; i++){
+            result ^= i;//list all the results from 0 - i
+            result ^= nums[i];//xor all the results from 0 -i and we get the xor answer.
+        }
+        return result;
+    }
+}
