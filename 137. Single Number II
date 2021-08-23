@@ -1,0 +1,13 @@
+class Solution {
+    public int singleNumber(int[] nums) {
+        // 1. 存入ones
+        // 2. 清空ones， 存入twos
+        // 3. 清空twos
+        int ones = 0, twos = 0;
+        for(int i = 0; i < nums.length; i++){
+            ones = (ones ^ nums[i]) & ~twos;
+            twos = (twos ^ nums[i]) & ~ones;
+        }
+        return ones;    
+    }
+}
