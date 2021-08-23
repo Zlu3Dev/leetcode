@@ -1,0 +1,15 @@
+class Solution {
+    //DP的思路
+    public int[] countBits(int num) {
+        int[] f = new int[num + 1];
+        int i;
+        f[0] = 0;
+        for(i = 1;i <= num; i++){ //以5为例子
+            //i >> 1 = 1/2,2/2,3/2,4/2,5/2 表示去掉最后一位，剩下的1的个数。01111
+            //i mod 2 = 1%2, 2%2,3%2,4%2,5%2 表示i的二进制表示中最后一位。10101
+            f[i] = f[i>>1] + (i % 2);
+            System.out.println(f[i]);
+        }
+        return f;
+    }
+}
