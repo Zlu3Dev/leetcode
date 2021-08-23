@@ -1,0 +1,6 @@
+class Solution {
+    public boolean isPowerOfTwo(int n) {
+       return (n > 0) && ((n & (n - 1)) == 0);
+        //利用了power2的性质，如果为偶数的话他的bit就是10000....如果是非2的偶数的话就是n-1 = 11111了，他们相交就是0.
+    }
+}
