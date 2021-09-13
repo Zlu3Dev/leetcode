@@ -1,0 +1,77 @@
+class Solution {
+    public int latestDayToCross(int row, int col, int[][] cells) {
+        DSU dsu = new DSU(row, col);
+        int TOP = row * col;
+        int BOT = row * col + 1;
+        
+        for (int i = 0; i < cells.length; i++) {
+            dsu.activate(cells[i][0] - 1, cells[i][1] - 1);
+            if (dsu.connected(TOP, BOT)) return i;
+        }
+        
+        return 0;
+    }
+}
+
+class DSU {
+    int r;
+    int c;
+    int n;
+    
+    int[] p;
+    int[] dx = new int[]{1, 0, -1, 0, 1,  -1, 1, -1};
+    int[] dy = new int[]{0, 1, 0, -1, 1,  -1, -1, 1};
+    // int[] dd;
+    DSU(int r, int c) {
+        this.r = r;
+        this.c = c;
+        n = r * c + 2;
+        
+        p = new int[n];
+        Arrays.fill(p, -1);
+        p[r * c] = r * c;
+        p[r * c + 1] = r * c + 1;
+        // dd = new int[]{c, 1, -c, -1};
+    }
+    
+    int find(int i) {
+        if (p[i] == i) return i;
+        return p[i] = find(p[i]);
+    }
+    
+    void union(int i, int j) {
+        int fi = find(i);
+        int fj = find(j);
+        if (fi != fj) {
+            p[fi] = fj;
+        }
+    }
+    
+    void activate(int i, int j) {
+        int v = i * c + j;
+        p[v] = v;
+        
+        for (int d = 0; d < 8; d++) {
+            int x = i + dx[d];
+            int y = j + dy[d];
+            int vv = x * c + y;
+            if (x >= 0 && x < r && y >= 0 && y < c && p[vv] >= 0) {
+                union(v, vv);
+            }
+        }
+        
+        if (j == 0) {
+            union(v, r * c);
+        }
+        
+        if (j == c - 1) {
+            union(v, r * c + 1);
+        }
+    }
+    
+    boolean connected(int i, int j) {
+        int fi = find(i);
+        int fj = find(j);
+        return fi >= 0 && fj >= 0 && fi == fj;
+    }
+}
