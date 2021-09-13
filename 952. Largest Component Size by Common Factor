@@ -1,0 +1,77 @@
+class Solution {
+    public int largestComponentSize(int[] nums) {
+        int maxNum = Integer.MIN_VALUE;
+        Map<Integer, Node> map = new HashMap<>();
+        for (int i = 0;i<nums.length;i++) {
+            maxNum = Math.max(maxNum, nums[i]);
+            map.put(nums[i], new Node(nums[i], 1));
+        }
+        int[] sieve = new int[maxNum + 1];
+        for (int i = 0;i<=maxNum;i++) {
+            sieve[i] = i;
+        }
+        for (int i = 2; i*i <= maxNum; i++) {
+            if (sieve[i] == i) {
+                for (int j = i*i; j <= maxNum; j+=i) {
+                    if (sieve[j] == j)
+                        sieve[j] = i;
+                }
+            }
+        }
+        for (int i: nums) {                
+            Node n = map.get(i);
+            while(i != 1) {
+                int spf = sieve[i];
+                 if (!map.containsKey(i)) {
+                    map.put(i , new Node(i, 0));
+                 }
+                map.computeIfAbsent(spf, k -> new Node(k, 0)).union(n);
+                i /= sieve[i];
+            }
+        }
+        
+        int ans = Integer.MIN_VALUE;
+        for (Node node : map.values()) {
+            ans = Math.max(node.findSet().count, ans);
+        }
+        return ans;
+    }
+}
+
+class Node {
+    int count;
+    int rank;
+    int val;
+    Node parent;
+    
+    public Node(int val, int count) {
+        this.val = val;
+        parent = this;
+        rank = 0;
+        this.count = count;
+    }
+    
+    public Node findSet() {
+        if (this.parent == this) {
+            return this;
+        }
+        this.parent = this.parent.findSet();
+        return this.parent;
+    }
+    
+    public void union(Node node) {
+        Node rep1 = this.findSet();
+        Node rep2 = node.findSet();
+        if (rep1 == rep2) {
+            return;
+        }
+        if (rep1.rank >= rep2.rank) {
+            rep2.parent = rep1;
+            if (rep1.rank == rep2.rank) rep1.rank++;
+            rep1.count += rep2.count;
+        } else {
+            rep1.parent = rep2;
+            rep2.count += rep1.count;
+        }
+    }
+}
