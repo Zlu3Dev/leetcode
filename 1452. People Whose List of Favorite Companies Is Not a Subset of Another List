@@ -1,0 +1,41 @@
+class Solution {
+    public List<Integer> peopleIndexes(List<List<String>> favoriteCompanies) {
+          int n = favoriteCompanies.size();
+        Set<String> set = new HashSet<>();
+        for (List<String> companies: favoriteCompanies)
+            for (String company: companies)
+                set.add(company);
+        int m = set.size();
+        int mask = 0;
+        Map<String, Integer> map = new HashMap<>();
+        for (String company: set) {
+            map.put(company, mask++);
+        }
+        boolean[][] masks = new boolean[n][m];
+        for (int i = 0; i < n; i++) {
+            for (String company: favoriteCompanies.get(i)) 
+                masks[i][map.get(company)] = true;
+        }
+        List<Integer> res = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            boolean good = true;
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
+                int count = 0;
+                for (int k = 0; k < m; k++) {
+                    if (masks[i][k]) {
+                        count++;
+                        if (masks[j][k])
+                            count--;
+                    }
+                }
+                if (count == 0) {
+					good = false;
+					break;
+				}
+            }
+            if (good) res.add(i);
+        }
+        return res;
+    }
+}
