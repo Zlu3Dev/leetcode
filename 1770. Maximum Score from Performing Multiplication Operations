@@ -1,0 +1,63 @@
+class Solution {
+   
+        // private int dfs(int [] arr, int [] mi, int i, int j, int cnt) {
+        //     if (cnt >= mi.length) return 0;
+        //     if (cache.containsKey(i) && cache.get(i).containsKey(j)) return cache.get(i).get(j);
+        //     int res = Math.max(
+        //         mi[cnt] * arr[i] + dfs(arr, mi, i+1, j, cnt+1),
+        //         mi[cnt] * arr[j] + dfs(arr, mi, i, j-1, cnt+1));
+        //     if (!cache.containsKey(i)) cache.put(i, new HashMap<Integer, Integer>());
+        //     cache.get(i).put(j, res);
+        //     return res;
+        // }
+        // Map<Integer, Map<Integer, Integer>> cache = new HashMap<>();
+        // public int maximumScore(int[] nums, int[] multipliers) {
+        //     return dfs(nums, multipliers, 0, nums.length-1, 0);
+        // }
+        public int maximumScore(int[] arr, int[] multipliers) {
+            int n = arr.length;
+            int m = multipliers.length;
+            if (n == 1) return arr[0] * multipliers[0];
+            int [] dp = new int [n]; // the max product if get i vals from left side
+            Arrays.fill(dp, Integer.MIN_VALUE);
+            dp[0] = arr[n-1] * multipliers[0];
+            dp[1] = arr[0] * multipliers[0];
+            for (int o = 1; o < m; o++) {
+                if (o + 1 < n) 
+                    dp[o+1] = dp[o] + arr[o] * multipliers[o];
+                for (int i = o; i > 0; i--) 
+                    dp[i] = Math.max(dp[i-1] + arr[i-1] * multipliers[o], dp[i] + arr[n-(o-i)-1] * multipliers[o]);
+                dp[0] = dp[0] + arr[n - o - 1] * multipliers[o];
+            }
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < n; i++) 
+                max = Math.max(dp[i], max);
+            return max;
+        }
+        // 定义二维数组dp[m + 1][m + 1]。dp[i][j]：表示nums数组中前i个数和后j个数组成的最大分数。
+        // base case：
+        // dp[0][0] = 0;
+        // dp[i][0]：此状态表示nums数组中前i个数和后0个数组成的最大分数，此状态只可能由dp[i - 1][0]转移得到。
+        // dp[0][j]：此状态表示nums数组中前0个数和后j个数组成的最大分数，此状态只可能由dp[0][j - 1]转移得到。
+        // dp[i][j]：该状态表示nums数组中前i个数和后j个数组成的最大分数，可能由状态
+        // dp[i - 1][j]和状态dp[i][j - 1]转移得到，取其中得分最大的一个。
+        // 遍历所有可能的组合（满足i + j = m）获得最大得分。
+        // public int maximumScore(int[] arr, int[] multipliers) { // 这里有个bug暂时不想改了，但思路清晰
+        //     int n = arr.length;
+        //     int m = multipliers.length;
+        //     if (n == 1) return arr[0] * multipliers[0];
+        //     int [][] dp = new int [m+1][m+1];
+        //     for (int i = 1; i <= m; i++)
+        //         dp[i][0] = dp[i-1][0] + arr[i-1]*multipliers[i-1];
+        //     for (int i = 1; i <= m; i++)
+        //         dp[0][i] = dp[i-1][0] + arr[n-i]*multipliers[i-1];
+        //     for (int i = 1; i <= m; i++) 
+        //         for (int j = 1; j <= m; j++)
+        //             if (i + j <= m)
+        //             dp[i][j] = Math.max(dp[i-1][j] + arr[i-1]*multipliers[i+j-1], dp[i][j-1] + arr[n-j]*multipliers[i+j-1]);
+        //     int max = Integer.MIN_VALUE;
+        //     for (int i = 0; i <= m; i++) 
+        //         max = Math.max(max, dp[i][m-i]);
+        //     return max;
+        // }
+}
