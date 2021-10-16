@@ -1,0 +1,30 @@
+if (A == null || A.length < 3) {
+            return 0;
+        }
+        int N = A.length;
+        Map<Integer, Integer>[] f = new Map[N];
+        Map<Integer, Integer>[] f2 = new Map[N];
+        int ans = 0;
+        for (int i = 0; i < N; i++) {
+            f[i] = new HashMap<>();
+            f2[i] = new HashMap<>();
+            for (int j = 0; j < i; j++) {
+                if (Math.abs((long)A[i] - A[j]) > Integer.MAX_VALUE) {
+                    continue;
+                }
+                int d = A[i] - A[j];
+                
+                int f2_j_d = f2[j].getOrDefault(d, 0);
+                int f_j_d = f[j].getOrDefault(d, 0);
+                int f_i_d = f[i].getOrDefault(d, 0);
+                f[i].put(d, f_i_d + f_j_d + f2_j_d);
+                
+                int f2_i_d = f2[i].getOrDefault(d, 0);
+                f2[i].put(d, f2_i_d + 1);
+            }
+            
+            for (Integer o : f[i].keySet()) {
+                ans += f[i].get(o);
+            }
+        }
+        return ans;
