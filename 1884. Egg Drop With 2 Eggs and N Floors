@@ -1,0 +1,29 @@
+// Generic DP Solution, with N floors K eggs.
+// If egg is broken, we need to check (f-1) floors with (eggs-1) eggs.
+// 如果鸡蛋碎了，用(eggs-1)个鸡蛋检查(f-1)层楼。
+// If egg is unbroken, we need to check (n-f) floors with (eggs) eggs.
+// 如果鸡蛋没碎，用(eggs)个鸡蛋检查(n-f)层楼。
+// Time complexity: O(N*K), where K = 2
+// Space complexity: O(N*K)
+class Solution {
+    public int twoEggDrop(int n) {
+        if (n <= 2) return n;
+        int eggs = 2;
+        int[][] dp = new int[n+1][eggs+1];
+        return eggDrop(n, eggs, dp);
+    }
+    
+    private int eggDrop(int n, int eggs, int[][] dp) {
+        if (eggs == 1 || n <= 2) return n;
+        if (dp[n][eggs] > 0) return dp[n][eggs];
+        int minMove = n;
+        for (int f = 1; f < n; f++) {
+            int broken = eggDrop(f - 1, eggs - 1, dp);  // 如果鸡蛋碎了，用(eggs-1)个鸡蛋检查(f-1)层楼。
+            int unbroken = eggDrop(n - f, eggs, dp);  // 如果鸡蛋没碎，用(eggs)个鸡蛋检查(n-f)层楼。
+            int move = 1 + Math.max(broken, unbroken);
+            minMove = Math.min(minMove, move);
+        }
+        dp[n][eggs] = minMove;
+        return minMove;
+    }
+}
