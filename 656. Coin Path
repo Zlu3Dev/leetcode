@@ -1,0 +1,26 @@
+class Solution {
+    public List<Integer> cheapestJump(int[] A, int B) {
+        // write your code here
+        int n = A.length;
+        int[] dp = new int[n];
+        int[] nxt = new int[n];
+        List<Integer> path = new ArrayList<>();
+        for(int i = 0; i < n; ++i)dp[i] = nxt[i] = -1;
+        dp[n - 1] = A[n - 1];
+        for(int i = n - 2; i >= 0; --i)if(A[i] != -1){     //逆序枚举i
+            for(int j = i + 1; j <= i + B && j < n; ++j)if(dp[j] != -1){  //枚举i位置后的B范围内的j位置
+                if(dp[i] == -1 || dp[j] + A[i] < dp[i]){
+                    dp[i] = dp[j] + A[i];
+                    nxt[i] = j;								//将j作为i的下一个节点
+                }
+            }
+        }
+        if(dp[0] == -1)return path;
+        int now = 0;
+        while(now != -1){									//输出路径
+            path.add(now + 1);
+            now = nxt[now];
+        }
+        return path;
+    }
+}
