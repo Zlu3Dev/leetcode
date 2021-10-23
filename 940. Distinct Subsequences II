@@ -1,0 +1,37 @@
+class Solution {
+      private int MOD = 1000000007; 
+     
+    public int distinctSubseqII(String S) {
+        int n = S.length();
+        
+        // state: dp[i] 表示以下标 i 作为 subseq 的最后一个字符
+        // 的方案总数
+        int[] dp = new int[n];
+        
+        // initialization: 如果 i 是第一个出现 S.charAt(i) 这个字符的位置，那么 dp[i] = 1
+        Set<Character> visited = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            if (!visited.contains(S.charAt(i))) {
+                dp[i] = 1;
+            }
+            visited.add(S.charAt(i));
+        }
+        
+        // function: dp[i] = sigma{dp[j]}, j 到 i - 1 之间没有 S[i]
+        for (int i = 0; i < n; i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                dp[i] = (dp[i] + dp[j]) % MOD;
+                if (S.charAt(i) == S.charAt(j)) {
+                    break;
+                }
+            }
+        }
+        
+        // answer: 以所有位置结尾的方案总数之和
+        int answer = 0;
+        for (int i = 0; i < dp.length; i++) {
+            answer = (answer + dp[i]) % MOD;
+        }
+        return answer;
+    }
+}
