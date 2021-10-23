@@ -1,4 +1,22 @@
-if (A == null || A.length < 3) {
+// 只看精选
+// 令狐冲精选
+// 更新于 6/9/2020, 7:04:28 AM
+// java
+// 设定状态:
+
+// f[i][d]  表示以 A 中下标为 i 的数结尾的, 公差为 d 的等差切片的数量
+// f2[i][d] 表示以 A 中下标为 i 的数结尾的, 长度为 2 的, 公差为 d 的等差切片的数量
+// (f2记录的严格来说并不能称为等差切片, 因为长度小于 3, 只是为了描述方便)
+// 状态转移:
+
+// 对于 i, 枚举 0 <= j < i, d = A[i] - A[j]
+// f[i][d] += f2[j][d] + f[j][d]   // 以 j 结尾的长度为2的等差切片, 增加了 A[i] 就会变成真正的等差切片
+// f2[i][d] += 1                   // A[j], A[i] 组成一个长度为 2 的等差切片
+// 最后答案就是 f 内所有整数的和. 由于公差 d 可能是负数, 可能非常大而且不连续, 所以我们采用哈希表存储.
+
+public class Solution {
+    public int numberOfArithmeticSlices(int[] A) {
+        if (A == null || A.length < 3) {
             return 0;
         }
         int N = A.length;
@@ -28,3 +46,5 @@ if (A == null || A.length < 3) {
             }
         }
         return ans;
+    }
+}
