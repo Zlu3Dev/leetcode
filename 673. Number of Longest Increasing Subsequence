@@ -1,0 +1,28 @@
+class Solution {
+    public int findNumberOfLIS(int[] nums) {
+        int n = nums.length, res = 0, max_len = 0;
+        int[] len =  new int[n], cnt = new int[n];
+        for (int i = 0; i < n; i++) {
+            len[i] = cnt[i] = 1;//定义从1开始最小值
+            for (int j = 0; j < i ; j++) {
+                if (nums[i] > nums[j]) {//当存在递增的关系时候，不存在递增关系我们不考虑。
+                    if (len[i] == len[j] + 1) {//如果len[i]等于len[j] + 1，说明nums[i]这个数字可以加在以nums[j]结尾的递增序列后面，并且以nums[j]结尾的递增序列个数可以直接加到以nums[i]结尾的递增序列个数上
+                        cnt[i] += cnt[j];
+                    }
+                    if (len[i] < len[j] + 1) {//如果len[i]小于len[j] + 1，说明我们找到了一条长度更长的递增序列，那么我们此时奖len[i]更新为len[j]+1，并且原本的递增序列都不能用了，直接用cnt[j]来代替。
+                        len[i] = len[j] + 1;
+                        cnt[i] = cnt[j];
+                    }
+                }
+            }
+            if (max_len == len[i]) {//更新完len[i]和cnt[i]之后，要更新最大长度。如果最大长度等于len[i]，则把cnt[i]加到res之上
+                res += cnt[i];
+            }
+            if (max_len < len[i]) {//如果最大长度小于len[i]，则更新最大长度为len[i]，更新结果res为cnt[i]
+                max_len = len[i];
+                res = cnt[i];
+            }
+        }
+        return res;
+    }
+}
