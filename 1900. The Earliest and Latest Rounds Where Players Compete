@@ -1,0 +1,33 @@
+class Solution {
+    int[][][][] dp = new int[28][28][28][2];
+    public int[] earliestAndLatest(int n, int f, int s) {
+        return helper(f-1, s-f-1, n-s);
+    }
+    
+    int[] helper(int x, int y, int z) {
+        if (x == z)
+            return new int[]{1, 1};
+        if (x > z) // Make sure z > x
+            return helper(z, y, x);
+        if (dp[x][y][z][0] > 0)
+            return dp[x][y][z];
+        int a = x, b = y, c = z;
+        c--; // Remove because of the First Player
+        if (a+b < c) // Remove because of the Second Player
+            c--;
+        else if (a+b > c)
+            b--;
+        dp[x][y][z][0] = 100;
+        int n = (a+b+c)/2; // Players to remove
+        for (int i = 0; i <= a; i++)
+            for (int j = a-i; j <= c-i; j++) {
+                int k = a+b+c-n-i-j;
+                if (k >= 0 && k <= b) {
+                    int[] tmp = helper(i, k, j);
+                    dp[x][y][z][0] = Math.min(dp[x][y][z][0], tmp[0] + 1);
+                    dp[x][y][z][1] = Math.max(dp[x][y][z][1], tmp[1] + 1);
+                }
+            }
+        return dp[x][y][z];
+    }
+}
